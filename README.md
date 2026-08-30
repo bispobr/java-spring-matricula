@@ -1,114 +1,219 @@
-# API REST para gerenciamento de matrículas 
-## Descrição
+# API REST de Gerenciamento de Matrículas
 
-Esta aplicação é uma API REST, desenvolvida para o cadastro de discentes e as suas respectivas matrículas por meio de campos pre definidos. Ela oferece suporte às operações básicas de um CRUD, incluindo:
-- **Listagem de discentes cadastrados, com possibilidade de busca por ID, listagem geral** 
-- **Cadastro** Dos discentes com a sua matrícula.
-- **Atualização dos dados cadastrais do discente ** 
-- **Exclusão de um discente e de seus dados associados** 
+API REST desenvolvida com Java e Spring Boot para gerenciamento de discentes e suas respectivas matrículas.
 
-## Tecnologias Utilizadas
+A aplicação disponibiliza operações CRUD para discentes, permitindo cadastrar, consultar, atualizar e excluir registros, além de associar matrículas aos discentes.
 
-- **Java + Spring Boot** – Framework principal para o desenvolvimento da aplicação
-- **Lombok (@Slf4j)** – Facilita a geração e o gerenciamento de logs
-- **Tratamento de Exceções** - @RestControllerAdvice Centraliza o tratamento de erros da aplicação
-- **Swagger** – Documentação interativa da API
-- **Spring Boot Actuator** – Monitoramento e verificação da saúde da aplicação
-- **H2 database** – Banco de dados relacional em memória
-- **Docker** – Criação, empacotamento e execução da aplicação em contêineres.
+## Funcionalidades
 
+- Cadastro de discentes
+- Listagem de discentes
+- Consulta de discente por ID
+- Atualização de discente
+- Exclusão de discente
+- Associação de matrículas ao discente
+- Validação dos dados de entrada
+- Tratamento de exceções
+- Documentação da API com Swagger/OpenAPI
+- Monitoramento com Spring Boot Actuator
+- Persistência com Spring Data JPA
+- Banco H2 para desenvolvimento
+- Execução em container Docker
+
+## Tecnologias
+
+- Java 21
+- Spring Boot 4.0.2
+- Spring Web MVC
+- Spring Data JPA
+- Spring Validation
+- H2 Database
+- Spring Boot Actuator
+- Springdoc OpenAPI 2.8.8
+- Lombok
+- Maven
+- Docker
 
 ## Requisitos
 
-- Java 25
+- Java 21+
 - Maven
+- Docker (opcional)
 
+## Executando o projeto
 
-## Executando o Projeto
-
-1. Clone o repositório:
-
-```bash
-git https://github.com/bispobr/java-spring-matricula.git
-```
-
-## Como usar
-
-1. Inicie a aplicação
-2. A API está acessível através do endereço http://localhost:8080
-3. A documentação da API está acessível através do Link http://localhost:8080/swagger-ui/index.html#/
-4. O endpoint de saúde e métricas do Actuator está acessível através do Link http://localhost:8080/actuator/health
-
-## Como Rodar em um Container (Opcional)
-
-1. Construa o projeto
+Clone o repositório:
 
 ```bash
-mvn clean package 
+git clone https://github.com/bispobr/java-spring-matricula.git
+cd java-spring-matricula
 ```
 
-2. Gere a Imagem Docker, com o Docker  instalado execute:
-
+Execute a aplicação com Maven:
 
 ```bash
-docker build -t matricula . 
+mvn spring-boot:run
 ```
 
-3. Execute o Container
+A API estará disponível em:
+
+```text
+http://localhost:8080
+```
+
+## Swagger / OpenAPI
+
+Com a aplicação em execução, acesse a documentação interativa:
+
+```text
+http://localhost:8080/swagger-ui/index.html
+```
+
+## Actuator
+
+Endpoint de saúde da aplicação:
+
+```text
+http://localhost:8080/actuator/health
+```
+
+## API Endpoints
+
+### Cadastrar discente
+
+```http
+POST /discente
+Content-Type: application/json
+```
+
+Exemplo:
+
+```json
+{
+  "nome": "João da Silva",
+  "dataNascimento": "2000-02-10",
+  "telefone": "61999999999",
+  "matriculas": [
+    {
+      "CodigoMatricula": "MAT001",
+      "nomeCurso": "Sistemas de Informação",
+      "dataInicio": "2026-02-10"
+    }
+  ]
+}
+```
+
+### Listar discentes
+
+```http
+GET /discente/discentes
+```
+
+Retorna todos os discentes cadastrados.
+
+### Buscar discente por ID
+
+```http
+GET /discente/{id}
+```
+
+Retorna o discente correspondente ao identificador informado.
+
+### Atualizar discente
+
+```http
+PUT /discente/{id}
+Content-Type: application/json
+```
+
+Exemplo:
+
+```json
+{
+  "nome": "João da Silva",
+  "dataNascimento": "2000-02-10",
+  "telefone": "61988888888",
+  "matriculas": [
+    {
+      "CodigoMatricula": "MAT001",
+      "nomeCurso": "Sistemas de Informação",
+      "dataInicio": "2026-02-10"
+    }
+  ]
+}
+```
+
+### Excluir discente
+
+```http
+DELETE /discente/{id}
+```
+
+Remove o discente correspondente ao identificador informado.
+
+## Modelo simplificado
+
+```text
+Discente
+├── id
+├── nome
+├── dataNascimento
+├── telefone
+└── matriculas
+     ├── CodigoMatricula
+     ├── nomeCurso
+     └── dataInicio
+```
+
+## Fluxo da aplicação
+
+```text
+Cliente
+   │
+   ▼
+API REST
+   │
+   ▼
+Validação
+   │
+   ▼
+Camada de serviço
+   │
+   ▼
+Spring Data JPA
+   │
+   ▼
+H2 Database
+```
+
+## Testes
+
+Execute os testes automatizados com:
+
+```bash
+mvn test
+```
+
+## Docker
+
+Gere o pacote da aplicação:
+
+```bash
+mvn clean package
+```
+
+Gere a imagem Docker:
+
+```bash
+docker build -t matricula .
+```
+
+Execute o container:
 
 ```bash
 docker run -p 8080:8080 matricula
 ```
 
-## API Endpoints
-API contem os seguintes endpoints:
+## Status
 
-```http request
-POST /discente - Cadastra um novo discente
-Content-Type: application/json
-
-{
-  "nome": "string",
-  "dataNascimento": "3029-02-10",
-  "telefone": "string",
-  "matriculas": [
-    {
-      "CodigoMatricula": "string",
-      "nomeCurso": "string",
-      "dataInicio": "3029-02-10"
-    }
-  ]
-}
-```
-
-```http request
-GET /discente/discentes -  Lista todos os discentes
-```
-
-```http request
-GET /discente/{id} -  Lista discentes por id
-```
-
-```http request
-PUT /discente/{id} - Atualizar um discente existente
-Content-Type: application/json
-
-{
-  "nome": "string",
-  "dataNascimento": "3028-08-15",
-  "telefone": "string",
-  "matriculas": [
-    {
-      "CodigoMatricula": "string",
-      "nomeCurso": "string",
-      "dataInicio": "3028-11-11"
-    }
-  ]
-}
-```
-```http request
-DELETE /discente/{id} - Remover discente de id especificado.
-```
-
-
-
+Projeto desenvolvido para praticar a construção de APIs REST com Spring Boot, operações CRUD, relacionamento entre entidades, validação, persistência com JPA, documentação OpenAPI, monitoramento e execução em containers.
